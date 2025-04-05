@@ -84,6 +84,21 @@
             margin-top: 15px;
             background-color: red;
         }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hidden {
+            display: none; /* Esto asegura que el modal esté oculto por defecto */
+        }
     </style>
 </head>
 <body>
@@ -96,15 +111,14 @@
 
         <div class="button-container">
             <button onclick="capturarPeso()">Capturar</button>
-            <button onclick="mostrarFormulario('entraCamion')">Entra Camión</button>
-            <button onclick="mostrarFormulario('saleCamion')">Sale Camión</button>
-            <button onclick="mostrarFormulario('saleCamionTara')">Sale Camión c/Tara</button>
+            <button onclick="mostrarFormulario('entraCamion')">Tara</button>
+            <button onclick="mostrarFormulario('saleCamion')">Bruto</button>
+            <button onclick="mostrarFormulario('saleCamionTara')">Bruto c/Tara</button>
             <button onclick="mostrarFormulario('pesadas')">Pesadas</button>
             <button onclick="mostrarFormulario('anularPesada')">Anular Pesada</button>
         </div>
     </div>
 
-    <!-- MODAL (se muestra solo cuando se necesita) -->
     <div id="modal" class="modal hidden">
         <div class="modal-content">
             <h2 id="modal-title">Formulario</h2>
@@ -117,7 +131,15 @@
     </div>
 
     <script>
-        let pesoCapturado = 0; 
+        var pesaje= {
+            pesoCapturado: 0,
+            pesoAnterior: 0,
+            tara: 0,
+            bruto: 0,
+            fecha: new Date().toLocaleDateString(),
+            hora: new Date().toLocaleTimeString()
+        }
+
 
         // Simulación de la lectura del indicador (se actualizaría con RS232)
         function actualizarPesoSimulado() {
@@ -127,9 +149,10 @@
         setInterval(actualizarPesoSimulado, 3000); // Actualiza cada 3 segundos
 
         function capturarPeso() {
+            pesaje.pesoAnterior = pesaje.pesoCapturado;
             let pesoActualTexto = document.getElementById("pesoActual").innerText;
-            pesoCapturado = parseInt(pesoActualTexto.replace("Peso: ", "").replace(" kg", ""), 10);
-            alert(`Peso capturado: ${pesoCapturado} kg`);
+            pesaje.pesoCapturado = parseInt(pesoActualTexto.replace("Peso: ", "").replace(" kg", ""), 10);
+            alert(`Peso capturado: ${pesaje.pesoCapturado} kg`);
         }
 
         function mostrarFormulario(tipo) {
@@ -147,13 +170,13 @@
                     <label for="dominio">Dominio:</label>
                     <input type="text" id="dominio" placeholder="Ingrese Dominio">
                     <label for="peso">Peso Tara:</label>
-                    <input type="text" id="peso" value="${pesoCapturado} kg">
+                    <input type="text" id="peso" value="${pesaje.pesoCapturado} kg">
                 `;
             } else if (tipo === "saleCamion") {
                 modalTitle.innerText = "Datos del Camión - Salida";
                 formContent.innerHTML = `
                     <label for="pesoBruto">Peso Bruto:</label>
-                    <input type="text" id="pesoBruto" value="${pesoCapturado} kg">
+                    <input type="text" id="pesoBruto" value="${pesaje.pesoCapturado} kg">
                     <label for="pesoTara">Peso Tara (Opcional):</label>
                     <input type="text" id="pesoTara" placeholder="Ingrese Peso Tara">
                 `;
@@ -161,9 +184,9 @@
                 modalTitle.innerText = "Salida Camión con Tara";
                 formContent.innerHTML = `
                     <label for="taraSeleccionada">Seleccionar Tara:</label>
-                    <input type="text" id="taraSeleccionada" placeholder="Tara Anterior">
+                    <input type="text" id="taraSeleccionada" placeholder="Tara Anterior" value="${pesaje.pesoAnterior} kg">
                     <label for="pesoBrutoActual">Peso Bruto Actual:</label>
-                    <input type="text" id="pesoBrutoActual" value="${pesoCapturado} kg">
+                    <input type="text" id="pesoBrutoActual" value="${pesaje.pesoCapturado} kg">
                 `;
             } else if (tipo === "pesadas") {
                 modalTitle.innerText = "Búsqueda de Pesadas";
