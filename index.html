@@ -4,116 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesaje de Vehículos</title>
-    <!-- Agregar Font Awesome para los íconos -->
+    <!-- Enlace a Font Awesome para íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            margin: 0;
-        }
-        .container {
-            width: 80%;
-            max-width: 800px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            position: relative;
-        }
-        .peso {
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-            grid-column: span 2;
-            background: #e3e3e3;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .pesada {
-            grid-column: span 2;
-        }
-        .pesada label {
-            display: block;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .pesada .campo-doble {
-            display: flex;
-            gap: 10px;
-        }
-        .pesada .campo-doble input {
-            flex: 1;
-        }
-        .btn-capturar, .btn-tara, .btn-imprimir {
-            padding: 10px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn-capturar {
-            background: #007bff;
-        }
-        .btn-tara {
-            background: #28a745;
-        }
-        .btn-imprimir {
-            background: #f44336;
-        }
-        .botones {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            grid-column: span 2;
-        }
-        .tara-manual {
-            display: flex;
-            align-items: center;
-            grid-column: span 2;
-            margin-top: 10px;
-        }
-        .tara-manual input {
-            margin-left: 10px;
-        }
-        /* Nuevo estilo para el ícono de configuración */
-        .configuracion {
-            position: absolute;
-            left: 10px;
-            bottom: 10px;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        /* Estilo para MARCA2 (AM BALANZAS S.A) */
-        .marca2 {
-            font-size: 30px;
-            font-weight: bold;
-            text-align: center;
-            grid-column: span 2;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-      
-  </style>
+    <!-- Enlace al archivo de estilos -->
+    <link rel="stylesheet" href="./Styles/styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- Nuevo texto AM BALANZAS S.A -->
+        <!-- Título de la empresa -->
         <div class="marca2">AM BALANZAS S.A</div>
 
+        <!-- Display del peso -->
         <div class="peso">PESAJE: <span id="peso">0.00</span> kg</div>
         
+        <!-- Sección de datos del pesaje -->
         <div class="pesada">
             <label>Vehículo:</label>
             <div class="campo-doble">
@@ -152,196 +56,33 @@
             <input type="text" id="remito">
         </div>
         
+        <!-- Sección de tara manual -->
         <div class="tara-manual">
             <label for="tara-manual-checkbox">Tara Manual:</label>
             <input type="checkbox" id="tara-manual-checkbox" onclick="toggleTaraManual()">
             <input type="number" id="tara-manual" placeholder="Introduzca Tara Manual" disabled>
         </div>
 
+        <!-- Botones de acción -->
         <div class="botones">
             <button class="btn-imprimir" onclick="imprimirPesaje()">IMPRIMIR</button>
             <button class="btn-tara" onclick="registrarTara()">TARA</button>
             <button class="btn-capturar" onclick="capturarPesaje()">CAPTURAR</button>
         </div>
-<style>
-    .marca {
-        text-align: center;
-        font-weight: bold;
-        margin-top: 10px;
-        grid-column: span 2;
-    }
-    .marca .principal {
-        font-size: 14px;
-    }
-    .marca .secundario {
-        font-size: 11px;
-        display: block;
-    }
-</style>
 
-<!-- Marca personal debajo del botón CAPTURAR -->
-<div class="marca">
-    <span class="principal">By BITTECHNICAL</span>
-    <span class="secundario">- Bienes y Servicios -</span>
-</div>
-      
-      
-        <!-- Ícono de Configuración debajo de Tara Manual, alineado a la izquierda -->
+        <!-- Marca personal -->
+        <div class="marca">
+            <span class="principal">By BITTECHNICAL</span>
+            <span class="secundario">- Bienes y Servicios -</span>
+        </div>
+        
+        <!-- Ícono de configuración -->
         <div class="configuracion" onclick="abrirConfiguracion()">
             <i class="fas fa-cogs"></i>
         </div>
     </div>
     
-    <script>
-        let tarasPendientes = {};
-
-        // Activar/desactivar Tara Manual
-        function toggleTaraManual() {
-            let taraManualInput = document.getElementById("tara-manual");
-            taraManualInput.disabled = !taraManualInput.disabled;
-        }
-
-        // Registrar TARA
-        function registrarTara() {
-            let vehiculo = document.getElementById("vehiculo").value;
-            let peso = document.getElementById("peso").textContent;
-            
-            if (vehiculo && peso) {
-                tarasPendientes[vehiculo] = { tara: parseFloat(peso), bruto: null };
-                alert("TARA registrada correctamente para " + vehiculo);
-            } else {
-                alert("Ingrese un vehículo y un peso válido.");
-            }
-        }
-
-// Capturar Pesaje
-function capturarPesaje() {
-    let peso = document.getElementById("peso").textContent;
-    let vehiculo = document.getElementById("vehiculo").value;
-    if (!peso || !vehiculo) {
-        alert("Por favor, asegúrese de haber capturado el peso y vehículo correctamente.");
-        return;  // Evita continuar si hay campos vacíos
-    }
-    let acoplado = document.getElementById("acoplado").value;
-    let transporte = document.getElementById("transporte").value;
-    let cuitTransporte = document.getElementById("cuit_transporte").value;
-    let remitente = document.getElementById("remitente").value;
-    let cuitRemitente = document.getElementById("cuit_remitente").value;
-    let destino = document.getElementById("destino").value;
-    let cuitDestino = document.getElementById("cuit_destino").value;
-    let producto = document.getElementById("producto").value;
-    let chofer = document.getElementById("chofer").value;
-    
-    // Llamar a la función generarRemito y asignar el valor al campo de remito
-    let remitoGenerado = generarRemito();
-    document.getElementById("remito").value = remitoGenerado;
-
-    console.log("Pesaje capturado:", { peso, vehiculo, acoplado, transporte, cuitTransporte, remitente, cuitRemitente, destino, cuitDestino, producto, chofer, remitoGenerado });
-
-
-            if (tarasPendientes[vehiculo] && !tarasPendientes[vehiculo].bruto) {
-                tarasPendientes[vehiculo].bruto = parseFloat(peso);
-                let neto = tarasPendientes[vehiculo].bruto - tarasPendientes[vehiculo].tara;
-                console.log("Pesaje Neto:", neto);
-                alert("Pesaje capturado correctamente, NETO: " + neto + " kg");
-            } else {
-                alert("El vehículo no tiene TARA registrada o ya se registró el BRUTO.");
-            }
-        }
-
-        // Imprimir Pesaje
-        function imprimirPesaje() {
-            alert("Imprimiendo pesaje...");
-        }
-
-       // Función para abrir configuración
-function solicitarLogin(callback) {
-    let usuario = prompt("Ingrese usuario:");
-    let contrasena = prompt("Ingrese contraseña:");
-
-    if (usuario === "admin" && contrasena === "admin01234") {
-        callback();  // Acceso correcto, abrir configuración
-    } else {
-        alert("Acceso denegado. Usuario o contraseña incorrectos.");
-    }
-}
-        function abrirConfiguracion() {
-          solicitarLogin(() => {  
-          alert("Abriendo configuración...");// Aquí puedes redirigir a otra página o abrir un modal de configuración
-        });
-          
-        }
-
-        // Actualizar el peso con formato dinámico
-function actualizarPeso() {
-    let peso = document.getElementById("peso");
-    let pesoValor = 1234.56;  // Este valor debe ser dinámico, por ejemplo, de una balanza o puerto RS232
-    let pesoFormateado = aplicarComa(pesoValor.toFixed(2));
-    peso.textContent = pesoFormateado;
-}
-
-        // Configuración de coma en el peso
-function aplicarComa(peso) {
-    let comaPos = 4;  // Determina la posición de la coma (puedes ajustarlo según lo que necesites)
-    let pesoArray = peso.split('');
-    // Agregar coma a la posición indicada (desde el final hacia el principio)
-    pesoArray.splice(pesoArray.length - comaPos, 0, ',');
-    return pesoArray.join('');
-}
-
-        // Implementación de cambios dinámicos según configuración
-        actualizarPeso();
-      
-        // Función para generar el remito automáticamente
-      function generarRemito() {
-    let ultimoRemito = localStorage.getItem("ultimoRemito");
-
-    if (!ultimoRemito) {
-        ultimoRemito = "A000000"; // Inicia en A000000 si no hay registros previos
-    }
-
-    let letra = ultimoRemito.charAt(0);  // 'A'
-    let numero = parseInt(ultimoRemito.slice(1));  // '000000'
-    numero++;
-
-    let nuevoRemito = letra + numero.toString().padStart(6, '0');
-    localStorage.setItem("ultimoRemito", nuevoRemito);
-
-    return nuevoRemito;
-}
-      
-      // Datos del pesaje (para prueba)
-        let peso = 1000.25; // Este valor debe ser dinámico
-        document.getElementById("peso").textContent = peso.toFixed(2);
-
-        // Función para preparar y mostrar el ticket para impresión
-        function imprimirPesaje() {
-            // Obtener los datos del pesaje y otros campos
-            let vehiculo = "ABC123";
-            let fecha = new Date().toLocaleString();
-
-            let ticketHtml = `
-                <div style="text-align: center; font-size: 16px;">
-                    <h2>AM BALANZAS S.A</h2>
-                    <p><strong>Fecha y Hora:</strong> ${fecha}</p>
-                    <p><strong>PESADO:</strong> ${peso.toFixed(2)} kg</p>
-                    <p><strong>Vehículo:</strong> ${vehiculo}</p>
-                    <hr />
-                    <p><small>By BITTECHNICAL</small></p>
-                </div>
-            `;
-
-            // Crear una ventana para la impresión
-            let printWindow = window.open('', '', 'width=600,height=800');
-            printWindow.document.write(ticketHtml);
-            printWindow.document.close();
-
-            // Activar el cuadro de diálogo de impresión
-            printWindow.print();
-          
-        }
-      
-    </script>
-
+    <!-- Enlace al archivo de JavaScript -->
+    <script src="./Scripts/script.js"></script>
 </body>
 </html>
